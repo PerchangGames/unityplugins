@@ -372,6 +372,13 @@ namespace Apple.Core
         /// <returns>The desired AppleNativeLibrary, or an Invalid AppleNativeLibrary if none is found.</returns>
         public static AppleNativeLibrary GetLibrary(string packageDisplayName, string appleBuildConfig, string applePlatform)
         {
+            // FIX: If we're not in the editor, we might not have updated the package list.
+            if (_appleUnityPackages.Count == 0 && _updateState == UpdateState.Initializing)
+            {
+                OnEditorUpdate();   // UpdateState.Initializing
+                OnEditorUpdate();   // UpdateState.Updating
+            } 
+            
             if (_appleUnityPackages.ContainsKey(packageDisplayName))
             {
                 return _appleUnityPackages[packageDisplayName].GetLibrary(appleBuildConfig, applePlatform);
